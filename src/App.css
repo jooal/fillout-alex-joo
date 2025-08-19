@@ -1,0 +1,256 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* tabs */
+
+.tabs-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border-top: 1px solid #dddddd;
+  padding: 0.5rem;
+  z-index: 100;
+}
+
+.tabs-row {
+  display: flex;
+  gap: 100px;
+  align-items: center;
+}
+
+.tabs-list {
+  display: flex;
+  gap: 0;
+  position: relative;
+  align-items: center;
+}
+
+.tabs-list::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 2px dotted #aaa;
+  transform: translateY(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.tab-button {
+  position: relative;
+  z-index: 1;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  font: inherit;
+  outline: none;
+  background: #f3f4f6;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+}
+
+.tab-button:focus,
+.tab-button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.tab-button[aria-selected="true"] {
+  font-weight: 600;
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #cbd5e1;
+}
+
+.label-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-slot {
+  position: relative;
+  flex: 0 0 32px;
+  height: 28px;
+  z-index: 1;
+}
+
+/* add page button */
+
+.add-inline-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 18px; /* pick a consistent size, tweak as needed */
+  height: 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12px;
+  line-height: 1;
+  padding: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+/* show button only when parent .tab-slot is hovered */
+.tab-slot:hover .add-inline-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .add-inline-btn {
+    color: #f5f5f5;
+  }
+}
+
+.tab-slot:hover .add-inline-btn,
+.tab-slot:focus-within .add-inline-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* handle dark mode in web browser */
+
+@media (prefers-color-scheme: dark) {
+  html,
+  body,
+  #root {
+    background: #0f0f12;
+    color: #f3f4f6;
+  }
+
+  .tabs-container {
+    background: #1a1a1f;
+    border-top: 1px solid #303036;
+  }
+
+  .tabs-list::before {
+    border-top-color: #555b65;
+  }
+
+  .tab-button {
+    background: #2a2a30;
+    color: #9ca3af;
+    border: none;
+  }
+
+  .tab-button[aria-selected="true"] {
+    background: #3a3a40;
+    color: #f5f5f5;
+    font-weight: 600;
+    border: 1px solid #4b5563;
+  }
+
+  .add-inline-btn {
+    background: #2a2a30;
+    color: #f5f5f5;
+    border-color: #4b5563;
+  }
+}
+
+.ctx-menu {
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+}
+
+.ctx-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  font: inherit;
+  color: #111;
+}
+.ctx-item:hover {
+  background: #f3f4f6;
+}
+.ctx-item.danger {
+  color: #b91c1c;
+}
+.ctx-item.danger:hover {
+  background: #fee2e2;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ctx-menu {
+    background: #1f1f24;
+    border-color: #2f3137;
+    color: #e5e7eb;
+  }
+  .ctx-item {
+    color: #e5e7eb;
+  }
+  .ctx-item:hover {
+    background: #2a2a30;
+  }
+  .ctx-item.danger {
+    color: #fca5a5;
+  }
+  .ctx-item.danger:hover {
+    background: #3a1f1f;
+  }
+}
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  padding: 4px;
+  cursor: grab;
+  touch-action: none;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
