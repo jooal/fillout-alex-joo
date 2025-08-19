@@ -34,11 +34,11 @@ type MultiStepFormContextValue = {
   canGoToNext: boolean;
   canGoToPrev: boolean;
   //how do add a new tab, set id of the tab to put it after
-  // addTabAfter: (
-  //   afterId: string,
-  //   // the id doesnt exist yet since it's not created
-  //   newTab: Omit<Tab, "id"> & { id?: string }
-  // ) => void;
+  addTabAfter: (
+    afterId: string,
+    // the id doesnt exist yet since it's not created
+    newTab: Omit<Tab, "id"> & { id?: string }
+  ) => void;
   reorderTabs: (fromIndex: number, toIndex: number) => void;
 };
 
@@ -68,23 +68,24 @@ export function MultiStepProvider({
     if (canGoToNext) setSelectedTab(existingTabs[currentIndex + 1].id);
   };
 
-  // const addTabAfter: MultiStepFormContextValue["addTabAfter"] = (
-  //   afterId,
-  //   newTab
-  // ) => {
-  //   const id = newTab.id ?? `tab-${Math.random().toString(36).slice(2, 10)}`;
+  const addTabAfter: MultiStepFormContextValue["addTabAfter"] = (
+    afterId,
+    newTab
+  ) => {
+    const id = newTab.id ?? `tab-${Math.random().toString(36).slice(2, 10)}`;
 
-  //   setExistingTabs(prev => {
-  //     const idx = prev.findIndex(t => t.id === afterId);
-  //     const nextTab: Tab = { id, ...newTab };
-  //     if (idx === -1) return [...prev, nextTab];
-  //     const copy = prev.slice();
-  //     copy.splice(idx + 1, 0, nextTab);
-  //     return copy;
-  //   });
+    setExistingTabs(prev => {
+      const idx = prev.findIndex(t => t.id === afterId);
+      const nextTab: Tab = { id, ...newTab };
+      if (idx === -1) return [...prev, nextTab];
+      const copy = prev.slice();
+      copy.splice(idx + 1, 0, nextTab);
+      return copy;
+    });
 
-  //   setSelectedTab(id);
-  // };
+    console.log("length", tabs.length);
+    setSelectedTab(id);
+  };
 
   const reorderTabs: MultiStepFormContextValue["reorderTabs"] = (
     fromIndex,
@@ -104,6 +105,7 @@ export function MultiStepProvider({
         canGoToNext,
         canGoToPrev,
         reorderTabs,
+        addTabAfter,
       }}
     >
       {children}

@@ -61,6 +61,15 @@ interface SortableTabProps {
   children: React.ReactNode;
 }
 
+interface ContextMenuProps {
+  x: number;
+  y: number;
+  onClose: () => void;
+  onRename: () => void;
+  onDuplicate: () => void;
+  onDelete: () => void;
+}
+
 const pageTypeIcons: Record<PageType, JSX.Element> = {
   [PageType.Info]: <MdInfo className="inline text-lg" />,
   [PageType.Details]: <MdListAlt className="inline text-lg" />,
@@ -107,6 +116,55 @@ const SortableTab = ({
   );
 };
 
+const NewPageModal = ({
+  onClose,
+  onSave,
+}: {
+  onClose: () => void;
+  onSave: (name: string) => void;
+}) => {
+  const [pageName, setPageName] = useState<string>("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = pageName.trim();
+    if (!name) return;
+    onSave(name);
+  };
+
+  return (
+    <div className="modal-backdrop">
+      <div className="modal">
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="pageName" className="modal-label">
+            Page Name
+          </label>
+          <input
+            id="pageName"
+            type="text"
+            value={pageName}
+            onChange={e => setPageName(e.target.value.trim())}
+            placeholder="Enter page name"
+            className="modal-input"
+          />
+          <div className="modal-actions">
+            <button
+              type="button"
+              onClick={onClose}
+              className="modal-btn cancel"
+            >
+              Cancel
+            </button>
+            <button type="submit" className="modal-btn save">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 const ContextMenu = ({
   x,
   y,
@@ -114,14 +172,7 @@ const ContextMenu = ({
   onRename,
   onDuplicate,
   onDelete,
-}: {
-  x: number;
-  y: number;
-  onClose: () => void;
-  onRename: () => void;
-  onDuplicate: () => void;
-  onDelete: () => void;
-}) => {
+}: ContextMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [pos, setPos] = useState<{ left: number; top: number }>({
     left: x,
@@ -187,7 +238,12 @@ const ContextMenu = ({
 };
 
 export const MultiStepFormNavbar = () => {
-  const { tabs, selectedTab, setSelectedTab, reorderTabs } = useMultiStep();
+  const { tabs, selectedTab, setSelectedTab, reorderTabs, addTabAfter } =
+    useMultiStep();
+
+  const [newPageModalOpen, setNewPageModalOpen] = useState<boolean>(false);
+  // need to track which tab to add new page after
+  const [insertAfterId, setInsertAfterId] = useState<string | null>(null);
 
   //right click menu state
   const [menu, setMenu] = useState<{
@@ -311,7 +367,10 @@ export const MultiStepFormNavbar = () => {
                         <button
                           className="add-inline-btn"
                           aria-label={`Add page after ${tab.label}`}
-                          onClick={() => console.log("Insert page between")}
+                          onClick={() => {
+                            setNewPageModalOpen(true);
+                            setInsertAfterId(tab.id);
+                          }}
                         >
                           +
                         </button>
@@ -344,6 +403,23 @@ export const MultiStepFormNavbar = () => {
           }}
           onDelete={() => {
             console.log("Delete");
+          }}
+        />
+      )}
+
+      {newPageModalOpen && (
+        <NewPageModal
+          onClose={() => setNewPageModalOpen(false)}
+          onSave={(name: string) => {
+            if (!insertAfterId) return;
+            addTabAfter(insertAfterId, {
+              label: name,
+              // Hard coding this page type for now but in real case this modal would have a dropdown to select page type
+              type: PageType.Other,
+              content: <div style={{ padding: 16 }}>{name}</div>,
+            });
+            setNewPageModalOpen(false);
+            setInsertAfterId(null);
           }}
         />
       )}
